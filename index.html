@@ -124,7 +124,14 @@
 
             Swal.fire({ title: 'กำลังค้นหาข้อมูล...', text: 'โปรดรอสักครู่', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-            const params = new URLSearchParams({ action: 'search', callback: 'handleSearchResponse', id_card: idCard, student_id: studentId, first_name: firstName, last_name: lastName });
+            const params = new URLSearchParams({ 
+                action: 'search', 
+                callback: 'handleSearchResponse', 
+                id_card: idCard, 
+                student_id: studentId, 
+                first_name: firstName, 
+                last_name: lastName
+            });
             const script = document.createElement('script');
             script.src = `${GAS_URL}?${params.toString()}`;
             
@@ -161,23 +168,18 @@
             });
         }
         
-        // --- UPDATED FUNCTION ---
         function downloadIndividualData() {
             Swal.fire({ title: 'กำลังเตรียมข้อมูล...', text: 'โปรดรอสักครู่', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
             
-            // Use setTimeout to make the call asynchronous.
-            // This allows the loading Swal to render properly before the synchronous work of creating the file begins.
-            // This prevents the UI from appearing to "hang" or "freeze".
             setTimeout(() => {
                 try {
-                    const dataToDownload = [currentStudentData]; // Convert single object to array
-                    // Call the handler which will create the file and show the success message
+                    const dataToDownload = [currentStudentData];
                     handleDownloadResponse({ status: 'success', data: dataToDownload });
                 } catch (e) {
                     console.error("Download error:", e);
                     Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถสร้างไฟล์สำหรับดาวน์โหลดได้', 'error');
                 }
-            }, 100); // A small delay like 100ms is sufficient
+            }, 100);
         }
 
         function downloadClassData() {
@@ -203,8 +205,8 @@
             const downloadBtn = document.getElementById('download-btn');
             
             if (response.status === 'success') {
-                currentStudentData = response.data; // Store student data
-                downloadBtn.disabled = false; // Enable download button
+                currentStudentData = response.data;
+                downloadBtn.disabled = false;
 
                 const data = response.data;
                 container.innerHTML = `
@@ -213,7 +215,8 @@
                         ${renderField('คำนำหน้าชื่อ', data.title)} ${renderField('ชื่อ', data.firstName)} ${renderField('นามสกุล', data.lastName)}
                         ${renderField('เลขประจำตัวประชาชน', data.idCard)} ${renderField('รหัสนักเรียน', data.studentId)} ${renderField('ชั้น', data.class)}
                         ${renderField('วันเกิด', data.dob)} ${renderField('เพศ', data.gender)} ${renderField('บ้านเลขที่', data.address)}
-                        ${renderField('ตำบล', data.subdistrict)} ${renderField('อำเภอ', data.district)} ${renderField('จังหวัด', data.province)}
+                        ${renderField('หมู่', data.moo)} ${renderField('ตำบล', data.subdistrict)} ${renderField('อำเภอ', data.district)}
+                        ${renderField('จังหวัด', data.province)}
                         <div class="md:col-span-2 lg:col-span-3 my-2 border-t border-gray-300"></div>
                         ${renderField('ชื่อผู้ปกครอง', data.guardianName)} ${renderField('นามสกุลผู้ปกครอง', data.guardianLastName)} ${renderField('ความเกี่ยวข้อง', data.guardianRelation)}
                         ${renderField('อาชีพผู้ปกครอง', data.guardianJob)}
